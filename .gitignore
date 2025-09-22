@@ -1,3 +1,5 @@
+# 忽略 .github 文件夹
+.github/
 # Logs
 logs
 *.log

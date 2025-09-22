@@ -68,11 +68,44 @@ const moreLinks = [
 
 const utmParameters = `?utm_source=starter&utm_medium=start-page&utm_campaign=default-starter`
 
-const IndexPage = () => (
-  <main style={{ padding: "2rem", fontFamily: "sans-serif" }}>
-    <h1>Welcome to my universe!</h1>
-  </main>
-)
+
+const IndexPage = () => {
+  React.useEffect(() => {
+    // 动态加载 p5.js、vehicle.js、sketch.js
+    const addScript = (src) => {
+      const s = document.createElement('script');
+      s.src = src;
+      s.async = false;
+      document.body.appendChild(s);
+      return s;
+    };
+    const addLink = (href) => {
+      const l = document.createElement('link');
+      l.rel = 'stylesheet';
+      l.href = href;
+      document.head.appendChild(l);
+      return l;
+    };
+    // 加载样式
+    const styleEl = addLink('/p5-style.css');
+    // 用 CDN 加载 p5.js
+    const p5El = addScript('https://cdn.jsdelivr.net/npm/p5@1.6.0/lib/p5.min.js');
+    // 加载本地作品脚本
+    const vehicleEl = addScript('/vehicle.js');
+    const sketchEl = addScript('/sketch.js');
+    // 清理
+    return () => {
+      [p5El, vehicleEl, sketchEl].forEach(el => el && el.remove());
+      styleEl && styleEl.remove();
+    };
+  }, []);
+  return (
+    <main style={{ padding: "2rem", fontFamily: "sans-serif" }}>
+      <h1 style={{ position: 'relative', zIndex: 2, color: '#fff' }}>Welcome to my universe!</h1>
+      <div id="p5-container" style={{ position: 'fixed', left: 0, top: 0, width: '100vw', height: '100vh', zIndex: 1 }}></div>
+    </main>
+  );
+}
 
 /**
  * Head export to define metadata for the page
